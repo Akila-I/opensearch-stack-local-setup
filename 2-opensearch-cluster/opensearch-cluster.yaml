@@ -15,25 +15,28 @@ spec:
     opensearchCredentialsSecret:
       name: opensearch-admin-credentials-secret
     env:
-    - name: OPENID_CLIENT_ID
-      valueFrom:
-        secretKeyRef:
-          name: opensearch-dashboard-config
-          key: openid_client_id
-    - name: OPENID_CLIENT_SECRET
-      valueFrom:
-        secretKeyRef:
-          name: opensearch-dashboard-config
-          key: openid_client_secret
+    # Only if using OpenID Connect
+    # - name: OPENID_CLIENT_ID
+    #   valueFrom:
+    #     secretKeyRef:
+    #       name: opensearch-dashboard-config
+    #       key: openid_client_id
+    # - name: OPENID_CLIENT_SECRET
+    #   valueFrom:
+    #     secretKeyRef:
+    #       name: opensearch-dashboard-config
+    #       key: openid_client_secret
     additionalConfig:
-    #   opensearch.logQueries: "false"
-      opensearch_security.auth.type: "openid"
-      opensearch_security.openid.connect_url: ""
-      opensearch_security.openid.scope: "openid email profile User.Read"
-      opensearch_security.openid.header: "Authorization"
-      opensearch_security.openid.client_id: "${OPENID_CLIENT_ID}"
-      opensearch_security.openid.client_secret: "${OPENID_CLIENT_SECRET}"
-      opensearch_security.openid.base_redirect_url: "http://localhost:5601"
+      # opensearch.logQueries: "false"
+      opensearch_security.auth.type: "basicauth"
+      # Only if using OpenID Connect
+      # opensearch_security.auth.type: "openid"
+      # opensearch_security.openid.connect_url: "<openid-connect-url>"
+      # opensearch_security.openid.scope: "openid email profile User.Read"
+      # opensearch_security.openid.header: "Authorization"
+      # opensearch_security.openid.client_id: "${OPENID_CLIENT_ID}"
+      # opensearch_security.openid.client_secret: "${OPENID_CLIENT_SECRET}"
+      # opensearch_security.openid.base_redirect_url: "http://localhost:5601"
   confMgmt:
     smartScaler: true
   nodePools:
