@@ -1,0 +1,51 @@
+config:
+    inputs: |
+        [INPUT]
+            name tail
+            path /var/log/containers/*.log
+            tag kube.*
+            refresh_interval 5
+
+    filters: |
+        [FILTER]
+            Name kubernetes
+            Buffer_Size 32MB
+            K8S-Logging.Parser On
+            K8S-Logging.Exclude On
+            Keep_Log Off
+            Match kube.*
+            tls.verify Off
+
+    outputs: |
+        [OUTPUT]
+            Name opensearch
+            Host opensearch
+            HTTP_Passwd admin
+            HTTP_User admin
+            Logstash_Format On
+            Logstash_DateFormat %Y-%m-%d
+            Logstash_Prefix container_logs
+            Match kube.*
+            Port 9200
+            Replace_Dots On
+            Suppress_Type_Name On
+            tls On
+            tls.verify Off
+            Trace_Error On
+
+dnsPolicy: ClusterFirstWithHostNet
+
+# logLevel: debug
+
+hostNetwork: true
+
+rbac:
+    nodeAccess: true
+
+resources:
+    requests:
+        cpu: 5m
+        memory: 32Mi
+    limits:
+        cpu: 10m
+        memory: 64Mi
