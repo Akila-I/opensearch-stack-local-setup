@@ -2,7 +2,7 @@ apiVersion: opensearch.opster.io/v1
 kind: OpenSearchCluster
 metadata:
   name: opensearch
-  namespace: opensearch
+  namespace: observability
 spec:
   general:
     version: "2.15.0"
