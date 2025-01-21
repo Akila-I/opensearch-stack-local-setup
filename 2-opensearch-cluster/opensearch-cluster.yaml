@@ -9,6 +9,22 @@ spec:
     serviceName: opensearch
     setVMMaxMapCount: true
     pluginsList: ["repository-s3"]
+    keystore:
+    - secret:
+        name: snapshot-repository
+    snapshotRepositories:
+    - name: container-logs-automatic-snapshots
+      type: s3
+      settings:
+        bucket: "<bucket-name>"
+        region: "<region>"
+        base_path: container-logs-automatic-snapshots
+    - name: container-logs-manual-snapshots
+      type: s3
+      settings:
+        bucket: "<bucket-name>"
+        region: "<region>"
+        base_path: container-logs-manual-snapshots
   dashboards:
     version: "2.15.0"
     enable: true
