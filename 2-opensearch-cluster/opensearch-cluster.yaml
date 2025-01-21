@@ -1,0 +1,75 @@
+apiVersion: opensearch.opster.io/v1
+kind: OpenSearchCluster
+metadata:
+  name: opensearch
+  namespace: opensearch
+spec:
+  general:
+    version: "2.15.0"
+    serviceName: opensearch
+    setVMMaxMapCount: true
+  dashboards:
+    version: "2.15.0"
+    enable: true
+    replicas: 1
+    opensearchCredentialsSecret:
+      name: opensearch-admin-credentials-secret
+    env:
+    - name: OPENID_CLIENT_ID
+      valueFrom:
+        secretKeyRef:
+          name: opensearch-dashboard-config
+          key: openid_client_id
+    - name: OPENID_CLIENT_SECRET
+      valueFrom:
+        secretKeyRef:
+          name: opensearch-dashboard-config
+          key: openid_client_secret
+    additionalConfig:
+    #   opensearch.logQueries: "false"
+      opensearch_security.auth.type: "openid"
+      opensearch_security.openid.connect_url: ""
+      opensearch_security.openid.scope: "openid email profile User.Read"
+      opensearch_security.openid.header: "Authorization"
+      opensearch_security.openid.client_id: "${OPENID_CLIENT_ID}"
+      opensearch_security.openid.client_secret: "${OPENID_CLIENT_SECRET}"
+      opensearch_security.openid.base_redirect_url: "http://localhost:5601"
+  confMgmt:
+    smartScaler: true
+  nodePools:
+  - component: data
+    replicas: 1
+    diskSize: "3Gi"
+    resources:
+      requests:
+        memory: "1000Mi"
+        cpu: "500m"
+      limits:
+        memory: "1100Mi"
+        cpu: "800m"
+    roles:
+    - "data"
+  - component: master
+    replicas: 3
+    diskSize: "1Gi"
+    resources:
+      requests:
+        memory: "1000Mi"
+        cpu: "500m"
+      limits:
+        memory: "1100Mi"
+        cpu: "750m"
+    roles:
+    - "master"
+
+  security:
+    config:
+      adminCredentialsSecret:
+        name: opensearch-admin-credentials-secret
+      securityConfigSecret:
+        name: opensearch-security-config
+    tls:
+      transport:
+        generate: true
+      http:
+        generate: true
