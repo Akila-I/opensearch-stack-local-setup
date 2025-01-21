@@ -4,6 +4,9 @@ metadata:
   name: opensearch
   namespace: observability
 spec:
+  bootstrap:
+    additionalConfig:
+      network.bind_host: "0.0.0.0" # To prevent installing plugins on bootstrap node
   general:
     version: "2.15.0"
     serviceName: opensearch
